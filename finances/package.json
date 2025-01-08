@@ -2,10 +2,11 @@
   "name": "finances",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
-    "build": "tsc",
-    "start": "tsc && node ./dist/index.js",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
+    "start": "npm run build && node ./dist/index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

@@ -1,0 +1,7 @@
+services:
+  selenium:
+    image: selenium/standalone-chromium:latest
+    shm_size: "2gb"
+    ports:
+      - "4444:4444/tcp"
+      - "7900:7900/tcp"

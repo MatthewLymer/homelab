@@ -30,7 +30,7 @@ resource "google_dns_record_set" "lymer_ca_aaaa" {
   ]
 }
 
-resource "google_dns_record_set" "lymer_ca_cname" {
+resource "google_dns_record_set" "www_lymer_ca_cname" {
   name         = "www.${data.google_dns_managed_zone.lymer_ca.dns_name}"
   managed_zone = data.google_dns_managed_zone.lymer_ca.name
   type         = "CNAME"

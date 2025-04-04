@@ -2,6 +2,10 @@
 
 trap 'exit' ERR
 
+if [[ "$GCLOUD" == "" ]]; then
+    GCLOUD=docker run gcr.io/google.com/cloudsdktool/google-cloud-cli gcloud
+fi
+
 PROJECT=matthewlymer-production
 DNS_NAME=home.lymer.ca.
 ZONE=lymer-ca
@@ -11,7 +15,7 @@ CURRENT_IP=$(curl -sSL https://icanhazip.com)
 
 echo Current IP $CURRENT_IP.
 
-CURRENT_RRDATA=$(gcloud dns record-sets list \
+CURRENT_RRDATA=$($GCLOUD dns record-sets list \
     --name=$DNS_NAME \
     --type=A \
     --zone=$ZONE \
@@ -23,7 +27,7 @@ echo Current RRDATA $CURRENT_RRDATA.
 if [[ "$CURRENT_RRDATA" == "null" ]]; then
     echo Creating new record-set.
 
-    gcloud dns record-sets create $DNS_NAME \
+    $GCLOUD dns record-sets create $DNS_NAME \
         --rrdatas=$CURRENT_IP \
         --type=A \
         --ttl=300 \
@@ -31,9 +35,9 @@ if [[ "$CURRENT_RRDATA" == "null" ]]; then
         --project=$PROJECT
 
 elif [[ "$CURRENT_IP" != "$CURRENT_RRDATA" ]]; then
-    echo Updated existing record-set.
+    echo Updating existing record-set.
 
-    gcloud dns record-sets update $DNS_NAME \
+    $GCLOUD dns record-sets update $DNS_NAME \
         --rrdatas=$CURRENT_IP \
         --type=A \
         --ttl=300 \

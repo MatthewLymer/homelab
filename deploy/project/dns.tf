@@ -18,3 +18,14 @@ resource "google_dns_record_set" "lymer_ca_mx" {
     "5 outlook-com.olc.protection.outlook.com."
   ]
 }
+
+resource "google_dns_record_set" "wildcard_home_lymer_ca_cname" {
+  name         = "*.home.${google_dns_managed_zone.lymer_ca.dns_name}"
+  managed_zone = google_dns_managed_zone.lymer_ca.name
+  type         = "CNAME"
+  ttl          = 300
+
+  rrdatas = [
+    "home.${google_dns_managed_zone.lymer_ca.dns_name}"
+  ]
+}

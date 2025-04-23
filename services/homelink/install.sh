@@ -10,7 +10,7 @@ CRONTAB_PATH=/etc/config/crontab
 
 if [[ "$(cat $CRONTAB_PATH)" != *"$SCRIPT_PATH"* ]]; then
     # run every 15 minutes, offset by some random amount
-    echo "H/15 * * * * /share/homes/admin/homelink/cron.sh >> ${SCRIPT_PATH}.log" >> $CRONTAB_PATH
+    echo "H/15 * * * * ${SCRIPT_PATH}" >> $CRONTAB_PATH
 
     # restart crontab
     crontab /etc/config/crontab && /etc/init.d/crond.sh restart

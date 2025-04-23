@@ -1,7 +1,7 @@
 #!/bin/bash
 
 docker run --rm \
-    --volume "/share/homes/admin/certbot/certificates/:/etc/letsencrypt/live" \
+    --volume "/share/homes/admin/certbot/etc_letsencrypt:/etc/letsencrypt" \
     --volume "/share/homes/admin/certbot/sa.json:/root/.config/sa.json:ro" \
     certbot/dns-google certonly \
     --agree-tos \

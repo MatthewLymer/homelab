@@ -1,0 +1,51 @@
+---
+version: "3"
+services:
+  nginx:
+    restart: always
+    image: nginx:mainline-alpine
+    ports:
+      - 8443:443
+    volumes:
+      - ./workloads/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/data/etc/letsencrypt:/etc/letsencrypt:ro
+  certbot:
+    restart: always
+    image: certbot/dns-google
+    volumes:
+      - ./docker/data/etc/letsencrypt/:/etc/letsencrypt
+      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
+    entrypoint: |
+      sh -c '
+        trap exit INT TERM
+        while true; do
+          certbot certonly \
+            --agree-tos \
+            --noninteractive \
+            --preferred-challenges dns \
+            --domain "home.lymer.ca" \
+            --domain "*.home.lymer.ca" \
+            --dns-google \
+            --dns-google-project matthewlymer-production
+          sleep 12h
+        done &
+        wait
+      '
+  homelink:
+    restart: always
+    build:
+      context: workloads/homelink
+      dockerfile: ./Dockerfile
+    volumes:
+      - ${HOME}/.config/gcloud:/root/.config/gcloud
+    entrypoint: |
+      sh -c '
+        trap exit INT TERM
+        while true; do
+          ./update-dns-records.sh
+          sleep 15m
+        done &
+        wait
+      '   
+
+

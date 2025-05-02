@@ -1,0 +1,18 @@
+# Note about DNS:
+#   using DOCKER_HOST results in the host getting the wrong DNS
+#   configuration, so we use known good public nameservers
+#   instead of the misconfigured ones
+
+services:
+  nginx:
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+  certbot:
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+  homelink:
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4

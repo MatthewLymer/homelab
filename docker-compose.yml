@@ -15,8 +15,10 @@ services:
     volumes:
       - ./docker/data/etc/letsencrypt/:/etc/letsencrypt
       - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
-    entrypoint: |
-      sh -c '
+    entrypoint:
+      - sh
+      - -c
+      - |
         trap exit INT TERM
         while true; do
           certbot certonly \
@@ -30,22 +32,22 @@ services:
           sleep 12h
         done &
         wait
-      '
   homelink:
     restart: always
     build:
       context: workloads/homelink
       dockerfile: ./Dockerfile
     volumes:
-      - ${HOME}/.config/gcloud:/root/.config/gcloud
-    entrypoint: |
-      sh -c '
+      - ~/.config/gcloud/application_default_credentials.json:/root/sa.json:ro
+    environment:
+      - "CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=/root/sa.json"
+    entrypoint:
+      - sh
+      - -c
+      - |
         trap exit INT TERM
         while true; do
           ./update-dns-records.sh
           sleep 15m
         done &
         wait
-      '   
-
-

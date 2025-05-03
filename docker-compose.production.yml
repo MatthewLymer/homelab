@@ -5,14 +5,19 @@
 
 services:
   nginx:
+    restart: always
     dns:
       - 8.8.8.8
       - 8.8.4.4
+
   certbot:
+    restart: always
     dns:
       - 8.8.8.8
       - 8.8.4.4
+      
   homelink:
+    restart: always
     dns:
       - 8.8.8.8
       - 8.8.4.4

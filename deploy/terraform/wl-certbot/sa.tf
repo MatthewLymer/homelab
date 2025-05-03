@@ -1,16 +1,34 @@
-resource "google_service_account" "certbot" {
-  account_id   = "certbot"
-  display_name = "Certbot"
+resource "google_service_account" "default" {
+  account_id   = local.serviceAccount
+  display_name = local.serviceAccount
 }
 
-resource "google_dns_managed_zone_iam_member" "certbot_lymer_ca" {
+resource "google_dns_managed_zone_iam_member" "default_lymer_ca" {
   managed_zone = data.google_dns_managed_zone.lymer_ca.name
   role         = "roles/editor"
-  member       = "serviceAccount:${google_service_account.certbot.email}"
+  member       = "serviceAccount:${google_service_account.default.email}"
 }
 
-resource "google_project_iam_member" "certbot_dns_reader" {
+resource "google_project_iam_member" "default_dns_reader" {
   project = local.project.id
   role    = "roles/dns.reader"
-  member  = "serviceAccount:${google_service_account.certbot.email}"
+  member  = "serviceAccount:${google_service_account.default.email}"
+}
+
+resource "google_service_account_key" "default_sa_key" {
+  service_account_id = google_service_account.default.name
+}
+
+resource "google_secret_manager_secret" "default_sa_key" {
+  secret_id = "${local.serviceAccount}_sa_key"
+
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_version" "default_sa_key_version" {
+  secret = google_secret_manager_secret.default_sa_key.id
+
+  secret_data = base64decode(google_service_account_key.default_sa_key.private_key)
 }

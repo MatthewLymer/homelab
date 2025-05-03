@@ -4,6 +4,8 @@ locals {
   project = {
     id = "matthewlymer-production"
   }
+
+  serviceAccount = "homelink"
 }
 
 provider "google" {

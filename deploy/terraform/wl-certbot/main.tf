@@ -4,6 +4,8 @@ locals {
   project = {
     id = "matthewlymer-production"
   }
+
+  serviceAccount = "certbot"
 }
 
 provider "google" {

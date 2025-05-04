@@ -8,6 +8,7 @@ services:
     volumes:
       - ./workloads/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/data/etc/letsencrypt:/etc/letsencrypt:ro
+
   certbot:
     image: certbot/dns-google
     volumes:
@@ -30,6 +31,7 @@ services:
           sleep 12h
         done &
         wait
+
   homelink:
     build:
       context: workloads/homelink

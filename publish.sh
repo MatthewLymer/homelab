@@ -3,7 +3,6 @@
 SSH_CREDS="qnappy@qnappy"
 GOOGLE_PROJECT="matthewlymer-production"
 
-# aliases
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
     docker compose \
@@ -12,13 +11,20 @@ dc() {
     "$@"
 }
 
+sshq() {
+    ssh $SSH_CREDS "$@"
+}
+
 echo "Pushing config changes."
 
-ssh $SSH_CREDS -C "[ -d ~/home-automation ] || mkdir ~/home-automation"
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=certbot_sa_key | ssh $SSH_CREDS -C 'cat - > ~/home-automation/certbot_sa_key.json && chmod 600 ~/home-automation/certbot_sa_key.json'
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=homelink_sa_key | ssh $SSH_CREDS -C 'cat - > ~/home-automation/homelink_sa_key.json && chmod 600 ~/home-automation/homelink_sa_key.json'
+sshq -C "[ -d ~/home-automation ] || mkdir ~/home-automation"
 
-cat ./workloads/nginx/nginx.conf | ssh $SSH_CREDS -C "cat - > ~/home-automation/nginx.conf"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=certbot_sa_key | sshq -C 'cat - > ~/home-automation/certbot_sa_key.json && chmod 600 ~/home-automation/certbot_sa_key.json'
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=homelink_sa_key | sshq -C 'cat - > ~/home-automation/homelink_sa_key.json && chmod 600 ~/home-automation/homelink_sa_key.json'
+
+sshq -C "[ -d ~/home-automation/nginx ] || mkdir ~/home-automation/nginx"
+sshq -C 'find ~/home-automation/nginx -type f -delete' # delete files but keep directories
+tar -C ./workloads/nginx -cf - . | sshq -C 'tar -C ~/home-automation/nginx -xf -'
 
 echo "Starting workloads."
 

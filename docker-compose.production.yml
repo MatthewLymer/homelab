@@ -10,7 +10,9 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     volumes:
-      - /share/homes/qnappy/home-automation/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /share/homes/qnappy/home-automation/nginx/docker-entrypoint.d/50-hot-reload.sh:/docker-entrypoint.d/50-hot-reload.sh:ro
+      - /share/homes/qnappy/home-automation/nginx/conf.d/custom:/etc/nginx/conf.d/custom:ro
+      - /share/homes/qnappy/home-automation/nginx/templates:/etc/nginx/templates:ro
       - /share/homes/qnappy/home-automation/letsencrypt:/etc/letsencrypt:ro
 
   certbot:

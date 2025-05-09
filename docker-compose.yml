@@ -5,8 +5,13 @@ services:
     image: nginx:mainline-alpine
     ports:
       - 8443:443
+    environment:
+      - "NGINX_SSL_CERTIFICATE=/etc/letsencrypt/live/home.lymer.ca/fullchain.pem"
+      - "NGINX_SSL_CERTIFICATE_KEY=/etc/letsencrypt/live/home.lymer.ca/privkey.pem"
     volumes:
-      - ./workloads/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./workloads/nginx/docker-entrypoint.d/50-hot-reload.sh:/docker-entrypoint.d/50-hot-reload.sh:ro
+      - ./workloads/nginx/conf.d/custom:/etc/nginx/conf.d/custom:ro
+      - ./workloads/nginx/templates:/etc/nginx/templates:ro
       - ./docker/data/etc/letsencrypt:/etc/letsencrypt:ro
 
   certbot:

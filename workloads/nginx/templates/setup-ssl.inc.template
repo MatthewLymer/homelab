@@ -1,0 +1,12 @@
+listen              443 ssl;
+ssl_certificate     ${NGINX_SSL_CERTIFICATE};
+ssl_certificate_key ${NGINX_SSL_CERTIFICATE_KEY};
+ssl_protocols       TLSv1.2 TLSv1.3;
+ssl_ciphers         HIGH:!aNULL:!MD5;
+
+proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Nginx-Proxy true;
+proxy_set_header X-Forwarded-Host $host;
+proxy_set_header X-Forwarded-Proto $scheme;

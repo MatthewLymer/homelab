@@ -31,3 +31,11 @@ services:
       - 8.8.4.4
     volumes:
       - /share/homes/qnappy/home-automation/homelink_sa_key.json:/root/.config/gcloud/application_default_credentials.json:ro
+
+  actual:
+    restart: always
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    volumes:
+      - /share/homes/qnappy/home-automation/actual/data:/data

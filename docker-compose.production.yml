@@ -39,3 +39,15 @@ services:
       - 8.8.4.4
     volumes:
       - /share/homes/qnappy/home-automation/actual/data:/data
+
+  jellyfin:
+    restart: always
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://media.home.lymer.ca
+    volumes:
+      - /share/homes/qnappy/home-automation/jellyfin/config:/config
+      - /share/homes/qnappy/home-automation/jellyfin/cache:/cache
+      - /share/Torrents/completed:/media

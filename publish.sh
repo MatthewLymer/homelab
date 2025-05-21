@@ -28,7 +28,10 @@ sshq -C 'find ~/home-automation/nginx -type f -delete' # delete files but keep d
 tar -C ./workloads/nginx -cf - . | sshq -C 'tar -C ~/home-automation/nginx -xf -'
 
 # actual
-sshq -C "([ -d ~/home-automation/actual ] || mkdir ~/home-automation/actual) && [ -d ~/home-automation/actual/data ] || mkdir ~/home-automation/actual/data"
+sshq -C "([ -d ~/home-automation/actual ] || mkdir ~/home-automation/actual) && ([ -d ~/home-automation/actual/data ] || mkdir ~/home-automation/actual/data)"
+
+# jellyfin
+sshq -C "([ -d ~/home-automation/jellyfin ] || mkdir ~/home-automation/jellyfin) && ([ -d ~/home-automation/jellyfin/config ] || mkdir ~/home-automation/jellyfin/config) && ([ -d ~/home-automation/jellyfin/cache ] || mkdir ~/home-automation/jellyfin/cache)"
 
 echo "Starting workloads."
 

@@ -67,4 +67,5 @@ services:
     volumes:
       - ./workloads/jellyfin/data/config:/config
       - ./workloads/jellyfin/data/cache:/cache
-      - ./workloads/jellyfin/data/media:/media
+      - ./workloads/jellyfin/data/media/music:/media/music:ro
+      - ./workloads/jellyfin/data/media/torrents:/media/torrents:ro

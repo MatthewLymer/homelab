@@ -2,6 +2,7 @@
 
 SSH_CREDS="qnappy@qnappy"
 GOOGLE_PROJECT="matthewlymer-production"
+WORKSPACE_ROOT="~/home-automation"
 
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
@@ -15,23 +16,34 @@ sshq() {
     ssh $SSH_CREDS "$@"
 }
 
+echo "Setting up initial directories."
+
+sshq -C "mkdir -p $WORKSPACE_ROOT && echo Workspace root: $WORKSPACE_ROOT"
+
 echo "Pushing config changes."
 
-sshq -C "[ -d ~/home-automation ] || mkdir ~/home-automation"
+# certbot
+CERTBOT_DIR=$WORKSPACE_ROOT/certbot
+sshq -C "mkdir -p $CERTBOT_DIR"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=certbot_sa_key | sshq -C "cat - > $CERTBOT_DIR/certbot_sa_key.json && chmod 600 $CERTBOT_DIR/certbot_sa_key.json"
 
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=certbot_sa_key | sshq -C 'cat - > ~/home-automation/certbot_sa_key.json && chmod 600 ~/home-automation/certbot_sa_key.json'
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=homelink_sa_key | sshq -C 'cat - > ~/home-automation/homelink_sa_key.json && chmod 600 ~/home-automation/homelink_sa_key.json'
+# homelink
+HOMELINK_DIR=$WORKSPACE_ROOT/homelink
+sshq -C "mkdir -p $HOMELINK_DIR"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=homelink_sa_key | sshq -C "cat - > $HOMELINK_DIR/homelink_sa_key.json && chmod 600 $HOMELINK_DIR/homelink_sa_key.json"
 
 # nginx
-sshq -C "[ -d ~/home-automation/nginx ] || mkdir ~/home-automation/nginx"
-sshq -C 'find ~/home-automation/nginx -type f -delete' # delete files but keep directories
-tar -C ./workloads/nginx -cf - . | sshq -C 'tar -C ~/home-automation/nginx -xf -'
+NGINX_DIR=$WORKSPACE_ROOT/nginx
+sshq -C "mkdir -p $NGINX_DIR && find $NGINX_DIR -type f -delete" # delete files but keep directories
+tar -C ./workloads/nginx -cf - . | sshq -C "tar -C $NGINX_DIR -xf -"
 
 # actual
-sshq -C "([ -d ~/home-automation/actual ] || mkdir ~/home-automation/actual) && ([ -d ~/home-automation/actual/data ] || mkdir ~/home-automation/actual/data)"
+ACTUAL_DIR=$WORKSPACE_ROOT/actual
+sshq -C "mkdir -p $ACTUAL_DIR/data"
 
 # jellyfin
-sshq -C "([ -d ~/home-automation/jellyfin ] || mkdir ~/home-automation/jellyfin) && ([ -d ~/home-automation/jellyfin/config ] || mkdir ~/home-automation/jellyfin/config) && ([ -d ~/home-automation/jellyfin/cache ] || mkdir ~/home-automation/jellyfin/cache)"
+JELLYFIN_DIR=$WORKSPACE_ROOT/jellyfin
+sshq -C "mkdir -p $JELLYFIN_DIR/cache && mkdir -p $JELLYFIN_DIR/config"
 
 echo "Starting workloads."
 

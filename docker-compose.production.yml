@@ -46,7 +46,7 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     environment:
-      - JELLYFIN_PublishedServerUrl=https://media.home.lymer.ca
+      - JELLYFIN_PublishedServerUrl=https://media.lymer.ca
     volumes:
       - /share/homes/qnappy/home-automation/jellyfin/config:/config
       - /share/homes/qnappy/home-automation/jellyfin/cache:/cache

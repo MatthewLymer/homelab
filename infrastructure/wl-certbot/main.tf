@@ -1,19 +1,18 @@
 locals {
-  region = "northamerica-northeast1"
-
   project = {
     id = "matthewlymer-production"
   }
+
+  serviceAccount = "onprem-certbot"
 }
 
 provider "google" {
-  region  = local.region
   project = local.project.id
 }
 
 terraform {
   backend "gcs" {
     bucket = "490635812867-tfstate"
-    prefix = "matthewlymer-production-wl-lymersite"
+    prefix = "matthewlymer-production-wl-certbot"
   }
 }

@@ -25,12 +25,12 @@ echo "Pushing config changes."
 # certbot
 CERTBOT_DIR=$WORKSPACE_ROOT/certbot
 sshq -C "mkdir -p $CERTBOT_DIR"
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=certbot_sa_key | sshq -C "cat - > $CERTBOT_DIR/certbot_sa_key.json && chmod 600 $CERTBOT_DIR/certbot_sa_key.json"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=onprem-certbot_sa_key | sshq -C "cat - > $CERTBOT_DIR/certbot_sa_key.json && chmod 600 $CERTBOT_DIR/certbot_sa_key.json"
 
 # homelink
 HOMELINK_DIR=$WORKSPACE_ROOT/homelink
 sshq -C "mkdir -p $HOMELINK_DIR"
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=homelink_sa_key | sshq -C "cat - > $HOMELINK_DIR/homelink_sa_key.json && chmod 600 $HOMELINK_DIR/homelink_sa_key.json"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=onprem-homelink_sa_key | sshq -C "cat - > $HOMELINK_DIR/homelink_sa_key.json && chmod 600 $HOMELINK_DIR/homelink_sa_key.json"
 
 # nginx
 NGINX_DIR=$WORKSPACE_ROOT/nginx

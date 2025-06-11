@@ -2,7 +2,7 @@
 
 SSH_CREDS="qnappy@qnappy"
 GOOGLE_PROJECT="matthewlymer-production"
-WORKSPACE_ROOT="~/home-automation"
+WORKSPACE_ROOT="~/homelab"
 
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \

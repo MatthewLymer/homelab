@@ -10,10 +10,10 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     volumes:
-      - /share/homes/qnappy/home-automation/nginx/docker-entrypoint.d/50-hot-reload.sh:/docker-entrypoint.d/50-hot-reload.sh:ro
-      - /share/homes/qnappy/home-automation/nginx/conf.d/custom:/etc/nginx/conf.d/custom:ro
-      - /share/homes/qnappy/home-automation/nginx/templates:/etc/nginx/templates:ro
-      - /share/homes/qnappy/home-automation/letsencrypt:/etc/letsencrypt:ro
+      - /share/homes/qnappy/homelab/nginx/docker-entrypoint.d/50-hot-reload.sh:/docker-entrypoint.d/50-hot-reload.sh:ro
+      - /share/homes/qnappy/homelab/nginx/conf.d/custom:/etc/nginx/conf.d/custom:ro
+      - /share/homes/qnappy/homelab/nginx/templates:/etc/nginx/templates:ro
+      - /share/homes/qnappy/homelab/letsencrypt:/etc/letsencrypt:ro
 
   certbot:
     restart: always
@@ -21,8 +21,8 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     volumes:
-      - /share/homes/qnappy/home-automation/letsencrypt:/etc/letsencrypt
-      - /share/homes/qnappy/home-automation/certbot/certbot_sa_key.json:/root/.config/gcloud/application_default_credentials.json:ro
+      - /share/homes/qnappy/homelab/letsencrypt:/etc/letsencrypt
+      - /share/homes/qnappy/homelab/certbot/certbot_sa_key.json:/root/.config/gcloud/application_default_credentials.json:ro
       
   homelink:
     restart: always
@@ -30,7 +30,7 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     volumes:
-      - /share/homes/qnappy/home-automation/homelink/homelink_sa_key.json:/root/.config/gcloud/application_default_credentials.json:ro
+      - /share/homes/qnappy/homelab/homelink/homelink_sa_key.json:/root/.config/gcloud/application_default_credentials.json:ro
 
   actual:
     restart: always
@@ -38,7 +38,7 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     volumes:
-      - /share/homes/qnappy/home-automation/actual/data:/data
+      - /share/homes/qnappy/homelab/actual/data:/data
 
   jellyfin:
     restart: always
@@ -48,7 +48,7 @@ services:
     environment:
       - JELLYFIN_PublishedServerUrl=https://media.lymer.ca
     volumes:
-      - /share/homes/qnappy/home-automation/jellyfin/config:/config
-      - /share/homes/qnappy/home-automation/jellyfin/cache:/cache
+      - /share/homes/qnappy/homelab/jellyfin/config:/config
+      - /share/homes/qnappy/homelab/jellyfin/cache:/cache
       - /share/Music:/media/music:ro
       - /share/Torrents/completed:/media/torrents:ro

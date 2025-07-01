@@ -5,7 +5,7 @@
 
 services:
   nginx:
-    restart: always
+    restart: unless-stopped
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -16,7 +16,7 @@ services:
       - /share/homes/qnappy/homelab/letsencrypt:/etc/letsencrypt:ro
 
   certbot:
-    restart: always
+    restart: unless-stopped
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -25,7 +25,7 @@ services:
       - /share/homes/qnappy/homelab/certbot/certbot_sa_key.json:/root/.config/gcloud/application_default_credentials.json:ro
       
   homelink:
-    restart: always
+    restart: unless-stopped
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -33,7 +33,7 @@ services:
       - /share/homes/qnappy/homelab/homelink/homelink_sa_key.json:/root/.config/gcloud/application_default_credentials.json:ro
 
   actual:
-    restart: always
+    restart: unless-stopped
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -41,7 +41,7 @@ services:
       - /share/homes/qnappy/homelab/actual/data:/data
 
   jellyfin:
-    restart: always
+    restart: unless-stopped
     dns:
       - 8.8.8.8
       - 8.8.4.4

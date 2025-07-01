@@ -4,6 +4,12 @@
 #   instead of the misconfigured ones
 
 services:
+  autoheal:
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
   nginx:
     restart: unless-stopped
     dns:

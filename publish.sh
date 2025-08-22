@@ -1,11 +1,12 @@
 #!/bin/bash
 
-SSH_CREDS="qnappy@qnappy"
+SSH_CREDS="deployer@truenas.local"
 GOOGLE_PROJECT="matthewlymer-production"
-WORKSPACE_ROOT="~/homelab"
+WORKSPACE_ROOT="/mnt/main/home/deployer/homelab"
 
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
+    WORKSPACE_ROOT=$WORKSPACE_ROOT \
     docker compose \
     -f docker-compose.yml \
     -f docker-compose.production.yml \

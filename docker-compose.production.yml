@@ -57,4 +57,13 @@ services:
       - ${WORKSPACE_ROOT:?error}/jellyfin/config:/config
       - ${WORKSPACE_ROOT:?error}/jellyfin/cache:/cache
       - /mnt/main/music:/media/music:ro
-      - /mnt/main/torrents/completed:/media/torrents:ro
+      - /mnt/main/torrents:/media/torrents:ro
+
+  transmission:
+    restart: always
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    volumes:
+    - /mnt/main/torrents:/data:rw
+    - ${WORKSPACE_ROOT:?error}/transmission/scripts:/scripts:ro

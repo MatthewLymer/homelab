@@ -92,3 +92,26 @@ services:
       - ./workloads/jellyfin/data/cache:/cache
       - ./workloads/jellyfin/data/media/music:/media/music:ro
       - ./workloads/jellyfin/data/media/torrents:/media/torrents:ro
+
+  transmission:
+    labels:
+      - "autoheal=true"
+    image: haugene/transmission-openvpn:3.7
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 9091:9091
+    environment:
+      - LOCAL_NETWORK=192.168.0.0/16
+      - OPENVPN_PROVIDER=TORGUARD
+      - OPENVPN_CONFIG=Mexico
+      - OPENVPN_USERNAME=${TRANSMISSION_OPENVPN_USERNAME:-}
+      - OPENVPN_PASSWORD=${TRANSMISSION_OPENVPN_PASSWORD:-}
+    volumes:
+      - ./workloads/transmission/data:/data:rw
+      - ./workloads/transmission/scripts:/scripts:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

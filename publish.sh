@@ -4,9 +4,14 @@ SSH_CREDS="deployer@truenas.local"
 GOOGLE_PROJECT="matthewlymer-production"
 WORKSPACE_ROOT="/mnt/main/home/deployer/homelab"
 
+TRANSMISSION_OPENVPN_USERNAME=
+TRANSMISSION_OPENVPN_PASSWORD=
+
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
     WORKSPACE_ROOT=$WORKSPACE_ROOT \
+    TRANSMISSION_OPENVPN_USERNAME=$TRANSMISSION_OPENVPN_USERNAME \
+    TRANSMISSION_OPENVPN_PASSWORD=$TRANSMISSION_OPENVPN_PASSWORD \
     docker compose \
     -f docker-compose.yml \
     -f docker-compose.production.yml \
@@ -16,6 +21,10 @@ dc() {
 sshq() {
     ssh $SSH_CREDS "$@"
 }
+
+echo "Grant access to user"
+
+sshq -C 'sudo adduser deployer docker'
 
 echo "Setting up initial directories."
 
@@ -45,6 +54,13 @@ sshq -C "mkdir -p $ACTUAL_DIR/data"
 # jellyfin
 JELLYFIN_DIR=$WORKSPACE_ROOT/jellyfin
 sshq -C "mkdir -p $JELLYFIN_DIR/cache && mkdir -p $JELLYFIN_DIR/config"
+
+# transmission
+TRANSMISSION_DIR=$WORKSPACE_ROOT/transmission
+sshq -C "mkdir -p $TRANSMISSION_DIR/scripts && find $TRANSMISSION_DIR/scripts -type f -delete"
+tar -C ./workloads/transmission/scripts -cf - . | sshq -C "tar -C $TRANSMISSION_DIR/scripts -xf -"
+TRANSMISSION_OPENVPN_USERNAME=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=transmission-openvpn-username)
+TRANSMISSION_OPENVPN_PASSWORD=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=transmission-openvpn-password)
 
 echo "Starting workloads."
 

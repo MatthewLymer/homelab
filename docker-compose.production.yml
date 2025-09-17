@@ -34,7 +34,7 @@ services:
   jellyfin:
     restart: unless-stopped
     environment:
-      - JELLYFIN_PublishedServerUrl=https://media.lymer.ca
+      - JELLYFIN_PublishedServerUrl=https://media.${DOMAIN?:error}
     volumes:
       - ${WORKSPACE_ROOT:?error}/jellyfin/config:/config
       - ${WORKSPACE_ROOT:?error}/jellyfin/cache:/cache

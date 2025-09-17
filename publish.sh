@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SSH_CREDS="deployer@truenas.local"
-GOOGLE_PROJECT="matthewlymer-production"
+GOOGLE_PROJECT=$(cat .env | grep 'GOOGLE_PROJECT=' | cut -d'=' -f2-)
 WORKSPACE_ROOT="/mnt/main/home/deployer/homelab"
 
 TRANSMISSION_OPENVPN_USERNAME=
@@ -22,13 +22,16 @@ sshq() {
     ssh $SSH_CREDS "$@"
 }
 
+# this is a TrueNAS specific instruction as by default only
+# the "root" user has access to the docker socket, however,
+# you can grant access to the "docker" group, but that appears
+# to be ephemeral, so grant access every time we deploy and
+# hope there's no race-condition.
 echo "Grant access to user"
-
 sshq -C 'sudo adduser deployer docker'
 
 echo "Setting up initial directories."
-
-sshq -C "mkdir -p $WORKSPACE_ROOT && echo Workspace root: $WORKSPACE_ROOT"
+sshq -C "mkdir -p $WORKSPACE_ROOT"
 
 echo "Pushing config changes."
 

@@ -12,17 +12,17 @@ services:
       - 13448:443
       - 10808:80
     environment:
-      - "NGINX_SSL_CERTIFICATE=/etc/letsencrypt/live/lymer.ca/fullchain.pem"
-      - "NGINX_SSL_CERTIFICATE_KEY=/etc/letsencrypt/live/lymer.ca/privkey.pem"
+      - "NGINX_SSL_CERTIFICATE=/etc/letsencrypt/live/${DOMAIN?:error}/fullchain.pem"
+      - "NGINX_SSL_CERTIFICATE_KEY=/etc/letsencrypt/live/${DOMAIN?:error}/privkey.pem"
     volumes:
       - ./workloads/nginx/docker-entrypoint.d/50-hot-reload.sh:/docker-entrypoint.d/50-hot-reload.sh:ro
       - ./workloads/nginx/conf.d/custom:/etc/nginx/conf.d/custom:ro
       - ./workloads/nginx/templates:/etc/nginx/templates:ro
-      - ./docker/data/etc/letsencrypt:/etc/letsencrypt:ro
+      - ./.data/letsencrypt:/etc/letsencrypt:ro
     labels:
       - "autoheal=true"
     healthcheck:
-      test: ["CMD", "curl", "https://status.lymer.ca/", "--fail", "--resolve", "status.lymer.ca:443:127.0.0.1"]
+      test: ["CMD", "curl", "https://status.${DOMAIN?:error}/", "--fail", "--resolve", "status.${DOMAIN?:error}:443:127.0.0.1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -30,7 +30,7 @@ services:
   certbot:
     image: certbot/dns-google
     volumes:
-      - ./docker/data/etc/letsencrypt/:/etc/letsencrypt
+      - ./.data/letsencrypt/:/etc/letsencrypt
       - ~/.config/gcloud/application_default_credentials.json:/root/.config/gcloud/application_default_credentials.json:ro
     entrypoint:
       - sh
@@ -42,9 +42,9 @@ services:
             --agree-tos \
             --noninteractive \
             --preferred-challenges dns \
-            --domain "*.lymer.ca" \
+            --domain "*.${DOMAIN?:error}" \
             --dns-google \
-            --dns-google-project matthewlymer-production
+            --dns-google-project ${GOOGLE_PROJECT?:error}
           sleep 12h
         done &
         wait
@@ -57,9 +57,9 @@ services:
       - ~/.config/gcloud/application_default_credentials.json:/root/.config/gcloud/application_default_credentials.json:ro
     environment:
       - "CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=/root/.config/gcloud/application_default_credentials.json"
-      - "GOOGLE_PROJECT=matthewlymer-production"
-      - "DNS_NAME=*.lymer.ca."
-      - "ZONE=lymer-ca"
+      - GOOGLE_PROJECT=${GOOGLE_PROJECT?:error}
+      - DNS_NAME=*.${DOMAIN?:error}.
+      - ZONE=${ZONE?:error}
     entrypoint:
       - sh
       - -c
@@ -76,7 +76,7 @@ services:
       - "autoheal=true"
     image: actualbudget/actual-server:sha-3cab9a3-alpine # May 11, 2025 at 8:57 pm
     volumes:
-      - ./workloads/actual/data:/data
+      - ./.data/actual:/data
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:5006/health || exit 1"]
       interval: 30s
@@ -88,10 +88,10 @@ services:
       - "autoheal=true"
     image: jellyfin/jellyfin
     volumes:
-      - ./workloads/jellyfin/data/config:/config
-      - ./workloads/jellyfin/data/cache:/cache
-      - ./workloads/jellyfin/data/media/music:/media/music:ro
-      - ./workloads/jellyfin/data/media/torrents:/media/torrents:ro
+      - ./.data/jellyfin/config:/config
+      - ./.data/jellyfin/cache:/cache
+      - ./.data/jellyfin/media/music:/media/music:ro
+      - ./.data/jellyfin/media/torrents:/media/torrents:ro
 
   transmission:
     labels:
@@ -108,7 +108,7 @@ services:
       - OPENVPN_USERNAME=${TRANSMISSION_OPENVPN_USERNAME:-}
       - OPENVPN_PASSWORD=${TRANSMISSION_OPENVPN_PASSWORD:-}
     volumes:
-      - ./workloads/transmission/data:/data:rw
+      - ./.data/transmission:/data:rw
       - ./workloads/transmission/scripts:/scripts:ro
     logging:
       driver: "json-file"

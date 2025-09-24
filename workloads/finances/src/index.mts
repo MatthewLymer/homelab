@@ -1,20 +1,42 @@
-import { createWebDriver } from "./bootstrapping/index.js";
-import { LoginPage } from "./easyweb/pages/loginPage.js";
+import process from 'process';
 
-const easywebUsername = process.env.EASYWEB_USERNAME;
-const easywebPassword = process.env.EASYWEB_PASSWORD;
+import { startServer } from './ui/server.js';
 
-const driver = await createWebDriver();
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const HOST = process.env.HOST ?? 'localhost';
 
-try {
-    await driver.navigate().to("https://easyweb.td.com/");
+startServer(HOST, PORT);
 
-    const loginPage = await LoginPage.waitForPage(driver);
+import { CronJob } from 'cron';
 
-    await loginPage.login(easywebUsername ?? "", easywebPassword ?? "");
+const easywebJob = CronJob.from({
+    cronTime: '* * * * * *',
+	onTick: () => {
+		console.log('You will see this message every second');
+	},
+	onComplete: null,
+    waitForCompletion: true,
+	start: true,
+	timeZone: 'utc'
+});
 
-    await new Promise(resolve => setTimeout(resolve, 10_000));
-}
-finally {
-    await driver.quit();
-}
+easywebJob.start();
+
+// import { createWebDriver } from "./bootstrapping/index.js";
+// import { LoginPage } from "./easyweb/pages/loginPage.js";
+
+// const easywebUsername = process.env.EASYWEB_USERNAME;
+// const easywebPassword = process.env.EASYWEB_PASSWORD;
+
+// const driver = await createWebDriver();
+
+// try {
+//     const loginPage = await LoginPage.navigateTo(driver);
+
+//     await loginPage.login(easywebUsername ?? "", easywebPassword ?? "");
+
+//     await new Promise(resolve => setTimeout(resolve, 10_000));
+// }
+// finally {
+//     await driver.quit();
+// }

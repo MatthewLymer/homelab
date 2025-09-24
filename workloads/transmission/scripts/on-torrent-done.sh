@@ -18,7 +18,7 @@ other_dir="/data/other"
 
 found_video="0"
 
-find "$TORRENT_PATH" -type f -iname \*.mkv -o -type f -iname \*.mp4 -o -type f -iname \*.avi | while read src || [[ -n $src ]]
+for src in $(find "$TORRENT_PATH" -type f -iname \*.mkv -o -type f -iname \*.mp4 -o -type f -iname \*.avi)
 do
     echo Processing \'$src\'
 

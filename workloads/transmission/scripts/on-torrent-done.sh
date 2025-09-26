@@ -18,7 +18,7 @@ other_dir="/data/other"
 
 found_video="0"
 
-for src in $(find "$TORRENT_PATH" -type f -iname \*.mkv -o -type f -iname \*.mp4 -o -type f -iname \*.avi)
+while IFS= read -r src || [[ -n $src ]]
 do
     echo Processing \'$src\'
 
@@ -51,7 +51,7 @@ do
 
         break
     fi
-done
+done < <(find "$TORRENT_PATH" -type f -iname \*.mkv -o -type f -iname \*.mp4 -o -type f -iname \*.avi)
 
 if [[ "$found_video" == "0" ]]
 then

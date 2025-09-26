@@ -1,7 +1,9 @@
 #!/bin/bash
 
 if [[ -z "$TR_TORRENT_DIR" ]]; then
-    echo TR_TORRENT_DIR is not set.
+    echo "Usage:"
+    echo "  TR_TORRENT_DIR=/data/completed \\"
+    echo "  $0"
     exit 1
 fi
 

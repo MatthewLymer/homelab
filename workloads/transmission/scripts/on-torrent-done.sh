@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if [[ -z "$TR_TORRENT_DIR" ]]; then
-    echo TR_TORRENT_DIR is not set.
-    exit 1
-fi
-
-if [[ -z "$TR_TORRENT_NAME" ]]; then
-    echo TR_TORRENT_NAME is not set.
+if [[ -z "$TR_TORRENT_DIR" ]] || [[ -z "$TR_TORRENT_NAME" ]]; then
+    echo "Usage:"
+    echo "  TR_TORRENT_DIR=/data/completed \\"
+    echo "  TR_TORRENT_NAME=ubuntu-24.04.3-desktop-amd64 \\"
+    echo "  $0"
     exit 1
 fi
 

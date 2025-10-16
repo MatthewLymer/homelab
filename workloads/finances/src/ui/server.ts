@@ -1,27 +1,28 @@
-import http from 'http';
+import express from 'express';
+import ejs from 'ejs';
+import { router as homeRouter } from './routes/home';
+import path from 'path';
 
-export function startServer(host: string, port: number) {
-    const server = http.createServer(async (req, res) => {
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+export function startServer(hostname: string, port: number) {
+    const app = express();
 
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'text/plain');
-            res.end('Hello, World!\n');
-        }
-        catch (e) {
-            try {
-                res.statusCode = 500;
-                res.setHeader('Content-Type', 'text/plain');
-                res.end('500 - Internal Server Error');
-            }
-            catch {
-                // do nothing.
-            }
-        }
+    app.engine('ejs', ejs.renderFile);
+    app.set('views', path.join(__dirname, 'views'));
+
+    app.use((req, res, next) => {
+        next();
+        console.debug('%s %s - [%i]', req.method, req.url, res.statusCode);
     });
 
-    server.listen(port, host, () => {
-        console.log(`Server running at http://${host}:${port}/`);
+    app.get('/', homeRouter);
+
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    app.listen(port, hostname, (error) => {
+        if (error) {
+            console.error(error);
+        } else {
+            console.debug(`Server running at http://${hostname}:${port}/`);
+        }
     });
 }

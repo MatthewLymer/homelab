@@ -12,7 +12,7 @@ import { CronJob } from 'cron';
 const easywebJob = CronJob.from({
     cronTime: '* * * * * *',
 	onTick: () => {
-		console.log('You will see this message every second');
+		// console.log('You will see this message every second');
 	},
 	onComplete: null,
     waitForCompletion: true,

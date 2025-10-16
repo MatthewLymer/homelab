@@ -6,18 +6,24 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsc --build",
-    "start": "npm run build && node ./dist/index.mjs",
+    "copyPublic": "node -e \"require('fs').cpSync('./src/ui/public', './dist/ui/public', {recursive: true});\"",
+    "copyViews": "node -e \"require('fs').cpSync('./src/ui/views', './dist/ui/views', {recursive: true});\"",
+    "start": "npm run build && npm run copyPublic && npm run copyViews && node ./dist/index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.3",
     "@types/selenium-webdriver": "^4.1.28",
     "typescript": "^5.7.2"
   },
   "dependencies": {
     "cron": "^4.3.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
     "selenium-webdriver": "^4.27.0"
   }
 }

@@ -1,0 +1,13 @@
+<form id="awaiting-input-form" action="/api/state" method="POST">
+    <% fields.forEach((field) => { %>
+    <div>
+        <label for="field-<%=field.name%>"><%=field.label%></label>
+    </div>
+    <div>
+        <input id="field-<%=field.name%>" name="<%=field.name%>" type="<%=field.type%>" />
+    </div>
+    <% }); %>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>

@@ -21,7 +21,7 @@
         };
 
         function setupListeners() {
-            const form = document.querySelector("#awaiting-input-form");
+            const form = document.querySelector("#awaiting-credentials-form");
 
             if (!form) {
                 return;

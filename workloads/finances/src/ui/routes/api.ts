@@ -1,6 +1,6 @@
 import express from 'express';
 
-import portalFsm from '../portalFsm';
+import easywebFsm from '../state/easywebFsm';
 import { VIEWS_DIR } from '../server';
 import path from 'path';
 import ejs from 'ejs';
@@ -9,8 +9,15 @@ export const router = express.Router();
 
 const TIMEOUT_MILLIS = 15_000;
 
-router.post('/state', async (req, res) => {
-    portalFsm.submitEasywebCredentials();
+router.use(express.json()).post('/state', async (req, res) => {
+    const body = req.body as Record<string, any>|null;
+
+    if (!body) {
+        res.status(400).json({});
+        return;
+    }
+
+    easywebFsm.submitCredentials(body.username, body.password);
 
     res.status(200).json({});
 });
@@ -27,7 +34,7 @@ router.get('/state', async (req, res) => {
         return;
     }
 
-    const state = await portalFsm.waitForStateChange(parseInt(lastUpdatedStr, 10), TIMEOUT_MILLIS);
+    const state = await easywebFsm.waitForStateChange(parseInt(lastUpdatedStr, 10), TIMEOUT_MILLIS);
 
     if (state === null) {
         res.sendStatus(204);
@@ -35,7 +42,7 @@ router.get('/state', async (req, res) => {
     }
 
     const htmlContent = await ejs.renderFile(
-        path.join(VIEWS_DIR, 'portalFsm', `${state.name}.ejs`), 
+        path.join(VIEWS_DIR, 'easywebFsm', `${state.name}.ejs`), 
         state.data
     );
 

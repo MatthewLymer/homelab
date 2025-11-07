@@ -8,10 +8,12 @@ const HOST = process.env.HOST ?? 'localhost';
 startServer(HOST, PORT);
 
 import { CronJob } from 'cron';
+import { fetchAccounts } from './easyweb/actions.js';
 
 const easywebJob = CronJob.from({
     cronTime: '* * * * * *',
-	onTick: () => {
+	onTick: async () => {
+		await fetchAccounts();
 		// console.log('You will see this message every second');
 	},
 	onComplete: null,
@@ -22,21 +24,3 @@ const easywebJob = CronJob.from({
 
 easywebJob.start();
 
-// import { createWebDriver } from "./bootstrapping/index.js";
-// import { LoginPage } from "./easyweb/pages/loginPage.js";
-
-// const easywebUsername = process.env.EASYWEB_USERNAME;
-// const easywebPassword = process.env.EASYWEB_PASSWORD;
-
-// const driver = await createWebDriver();
-
-// try {
-//     const loginPage = await LoginPage.navigateTo(driver);
-
-//     await loginPage.login(easywebUsername ?? "", easywebPassword ?? "");
-
-//     await new Promise(resolve => setTimeout(resolve, 10_000));
-// }
-// finally {
-//     await driver.quit();
-// }

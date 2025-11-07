@@ -3,49 +3,12 @@ type State = {
     data: Record<string, any>,
 };
 
-class PortalFsm {
-    private state: State = {
-        name: 'idle',
-        data: {
-            message: "Idle..."
-        }
-    }
-
+export abstract class FiniteStateMachine {
     private lastUpdated = Date.now();
+    private readonly onChangeListeners: (() => void)[] = [];
+    private readonly eventListeners = new Map<string, ((args: any) => void)[]>();
 
-    private onChangeListeners: (() => void)[] = [];
-
-    public promptForEasywebCredentials() {
-        this.ensureState('idle');
-
-        this.setState({
-            name: 'awaiting-input',
-            data: {
-                fields: [
-                    {
-                        label: "Username or Access Card",
-                        name: "username",
-                        type: "text",
-                    },
-                    {
-                        label: "Password",
-                        name: "password",
-                        type: "password"
-                    }
-                ]
-            },
-        });
-    }
-
-    public submitEasywebCredentials() {
-        this.ensureState('awaiting-input');
-
-        this.setState({
-            name: 'idle',
-            data: {
-                message: "Idle..."
-            },
-        });
+    protected constructor(private state: State) {
     }
 
     public waitForStateChange(lastUpdated: number, timeoutMillis: number): Promise<Readonly<State & {lastUpdated: number}>|null> {
@@ -82,13 +45,30 @@ class PortalFsm {
         });
     }
 
-    private ensureState(expectedState: string) {
+    public addEventListener<TEvent>(eventName: string, callback: ((event: TEvent) => void)) {
+        let listeners = this.eventListeners.get(eventName);
+
+        if (!listeners) {
+            listeners = [];
+            this.eventListeners.set(eventName, listeners);
+        }
+        
+        listeners.push(callback);
+    }
+
+    protected publishEvent<TEvent>(eventName: string, event: TEvent) {
+        for (const listener of this.eventListeners.get(eventName) ?? []) {
+            listener(event);
+        }
+    }
+
+    protected ensureState(expectedState: string) {
         if (expectedState !== this.state.name) {
             throw new Error(`Wanted state to be '${expectedState}', got '${this.state.name}'.`);
         }
     }
 
-    private setState(state: State) {
+    protected setState(state: State) {
         this.state = state;
         this.lastUpdated = Date.now();
 
@@ -97,7 +77,3 @@ class PortalFsm {
         }
     }
 }
-
-const portalFsm = new PortalFsm();
-
-export default portalFsm;

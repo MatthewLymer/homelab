@@ -32,6 +32,23 @@ class EasywebFsm extends FiniteStateMachine {
         });
     }
 
+    public promptForMfa() {
+        this.ensureState('idle');
+
+        this.setState({
+            name: 'awaiting-credentials',
+            data: {
+                fields: [
+                    {
+                        label: "Multifactor pin",
+                        name: "mfa",
+                        type: "text",
+                    }
+                ]
+            },
+        });
+    }
+
     public submitCredentials(username: string, password: string) {
         this.ensureState('awaiting-credentials');
 

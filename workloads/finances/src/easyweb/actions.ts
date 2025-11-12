@@ -1,5 +1,5 @@
 import { createWebDriver } from "../bootstrapping/index.js";
-import { getEasywebCredentials } from "../ui/inputProvider.js";
+import { getEasywebCredentials, getEasywebSecurityCode as getEasywebSecurityCode } from "../ui/inputProvider.js";
 import { MfaModal } from "./components/mfaModal.js";
 import { LoginPage } from "./pages/loginPage.js";
 
@@ -16,6 +16,10 @@ export async function fetchAccounts() {
         const modal = await MfaModal.waitUntilFound(driver);
 
         await modal.clickTextMe();
+
+        const securityCode = await getEasywebSecurityCode();
+
+        await modal.submitSecurityCode(securityCode.code);
 
         new Promise((resolve) => setTimeout(resolve, 30_000));
     }

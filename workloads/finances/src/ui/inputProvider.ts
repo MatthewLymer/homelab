@@ -38,10 +38,10 @@ class ManualResetVariable<TValue> {
 }
 
 const credentials = new ManualResetVariable<{username: string, password: string}>();
-const mfa = new ManualResetVariable<{pin: string}>();
+const securityCode = new ManualResetVariable<{code: string}>();
 
-easywebFsm.addEventListener('onSubmitMfa', (event: {pin: string}) => {
-    mfa.set({...event});
+easywebFsm.addEventListener('onSubmitSecurityCode', (event: {code: string}) => {
+    securityCode.set({...event});
 });
 
 easywebFsm.addEventListener('onSubmitCredentials', (event: {username: string, password: string}) => {
@@ -54,8 +54,8 @@ export async function getEasywebCredentials() {
     return credentials.get();
 }
 
-export async function getEasywebMfa() {
-    mfa.reset();
-    easywebFsm.promptForMfa();
-    return mfa.get();
+export async function getEasywebSecurityCode() {
+    securityCode.reset();
+    easywebFsm.promptForSecurityCode();
+    return securityCode.get();
 }

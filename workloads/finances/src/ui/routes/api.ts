@@ -9,7 +9,7 @@ export const router = express.Router();
 
 const TIMEOUT_MILLIS = 15_000;
 
-router.use(express.json()).post('/state', async (req, res) => {
+router.use(express.json()).post('/state/:action', async (req, res) => {
     const body = req.body as Record<string, any>|null;
 
     if (!body) {
@@ -17,7 +17,13 @@ router.use(express.json()).post('/state', async (req, res) => {
         return;
     }
 
-    easywebFsm.submitCredentials(body.username, body.password);
+    if (req.params['action'] === "submitCredentials") {
+        easywebFsm.submitCredentials(body.username, body.password);
+    }
+
+    if (req.params['action'] === "submitSecurityCode") {
+        easywebFsm.submitSecurityCode(body.code);
+    }
 
     res.status(200).json({});
 });

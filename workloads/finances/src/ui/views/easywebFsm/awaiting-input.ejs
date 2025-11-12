@@ -1,4 +1,4 @@
-<form id="awaiting-credentials-form" action="/api/state" method="POST" autocomplete="off">
+<form id="awaiting-credentials-form" action="/api/state/<%=action%>" method="POST" autocomplete="off">
     <% fields.forEach((field) => { %>
     <div>
         <label for="field-<%=field.name%>"><%=field.label%></label>

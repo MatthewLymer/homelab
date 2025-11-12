@@ -5,17 +5,27 @@ type State = {
     data: Record<string, any>,
 };
 
+function createIdleState(): State {
+    return {
+        name: 'idle',
+        data: {
+            message: "Idle..."
+        },
+    };
+}
+
 class EasywebFsm extends FiniteStateMachine {
     public constructor() {
-        super({name:'idle', data: {message:"Idle..."}});
+        super(createIdleState());
     }
 
     public promptForCredentials() {
         this.ensureState('idle');
 
         this.setState({
-            name: 'awaiting-credentials',
+            name: 'awaiting-input',
             data: {
+                action: "submitCredentials",
                 fields: [
                     {
                         label: "Username or Access Card",
@@ -32,16 +42,17 @@ class EasywebFsm extends FiniteStateMachine {
         });
     }
 
-    public promptForMfa() {
+    public promptForSecurityCode() {
         this.ensureState('idle');
 
         this.setState({
-            name: 'awaiting-credentials',
+            name: 'awaiting-input',
             data: {
+                action: "submitSecurityCode",
                 fields: [
                     {
-                        label: "Multifactor pin",
-                        name: "mfa",
+                        label: "Security code",
+                        name: "securityCode",
                         type: "text",
                     }
                 ]
@@ -50,16 +61,19 @@ class EasywebFsm extends FiniteStateMachine {
     }
 
     public submitCredentials(username: string, password: string) {
-        this.ensureState('awaiting-credentials');
+        this.ensureState('awaiting-input');
 
-        this.setState({
-            name: 'idle',
-            data: {
-                message: "Idle..."
-            },
-        });
+        this.setState(createIdleState());
 
         this.publishEvent('onSubmitCredentials', {username, password});
+    }
+
+    public submitSecurityCode(code: string) {
+        this.ensureState('awaiting-input');
+
+        this.setState(createIdleState());
+
+        this.publishEvent('onSubmitSecurityCode', {code});        
     }
 }
 

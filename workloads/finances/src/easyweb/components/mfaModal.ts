@@ -22,4 +22,9 @@ export class MfaModal {
 
         throw new Error(`Could not find button with text '${TEXT_ME_TEXT}'.`);
     }
+
+    public async submitSecurityCode(code: string) {
+        await this.element.findElement({css:"#code"}).sendKeys(code);
+        await this.element.findElement({css:"button[translate=BUTTON.ENTER]"}).click();
+    }
 }

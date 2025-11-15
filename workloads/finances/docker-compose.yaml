@@ -2,6 +2,9 @@ services:
   selenium:
     image: selenium/standalone-chromium:latest
     shm_size: "2gb"
+    privileged: true
+    devices:
+      - /dev/loop-control:/dev/loop-control
     environment:
       - "SE_NODE_MAX_SESSIONS=10"
     ports:

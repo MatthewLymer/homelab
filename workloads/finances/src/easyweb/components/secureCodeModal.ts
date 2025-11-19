@@ -2,10 +2,10 @@ import { until, type WebElement, type WebDriver } from "selenium-webdriver";
 
 const TEXT_ME_TEXT = "Text me";
 
-export class MfaModal {
+export class SecureCodeModal {
     private constructor(private element: WebElement) { }
 
-    public static async waitUntilFound(driver: WebDriver): Promise<MfaModal> {
+    public static async waitUntilFound(driver: WebDriver): Promise<SecureCodeModal> {
         const element = await driver.wait(until.elementLocated({css:"mat-dialog-container[aria-labelledby=otpChoiceModalTitle]"}));
         return new this(element);
     }

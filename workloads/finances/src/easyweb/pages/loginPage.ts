@@ -13,13 +13,16 @@ export class LoginPage {
         return new this(driver);
     }
 
-    public async login(username: string, password: string): Promise<void> {
+    public async login(username: string, password: string, rememberMe: boolean): Promise<void> {
         const form = this.driver.findElement({
             css: "core-login-form",
         });
 
         await form.findElement({ css: "#username" }).sendKeys(username);
         await form.findElement({ css: "#uapPassword" }).sendKeys(password);
+        if (rememberMe) {
+            await form.findElement({ css: "input[formcontrolname=rememberMe]"}).click();
+        }
         await form.findElement({ css: "button span.td-icon-secureBtn" }).click();
     }
 }

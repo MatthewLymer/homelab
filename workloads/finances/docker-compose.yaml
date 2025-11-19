@@ -7,6 +7,7 @@ services:
       - /dev/loop-control:/dev/loop-control
     environment:
       - "SE_NODE_MAX_SESSIONS=10"
+      - "SE_NODE_SESSION_TIMEOUT=300" # 5 minutes
     ports:
       - "4444:4444/tcp"
       - "7900:7900/tcp"

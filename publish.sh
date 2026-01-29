@@ -65,12 +65,31 @@ tar -C ./workloads/transmission/scripts -cf - . | sshq -C "tar -C $TRANSMISSION_
 TRANSMISSION_OPENVPN_USERNAME=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=transmission-openvpn-username)
 TRANSMISSION_OPENVPN_PASSWORD=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=transmission-openvpn-password)
 
+# sonarr
+SONARR_DIR=$WORKSPACE_ROOT/sonarr
+sshq -C "mkdir -p $SONARR_DIR/config"
+
+# prowlarr
+PROWLARR_DIR=$WORKSPACE_ROOT/prowlarr
+sshq -C "mkdir -p $PROWLARR_DIR/config"
+
 echo "Starting workloads."
 
 dc up --detach
 
-echo "Reloading nginx."
+# Do not do `dc kill --signal HUP nginx` to send the SIGHUP signal, as
+# it will make docker think we want to stop the container, and the
+# "unless-stopped" restart policy will NOT restart it.
+#
+# Instead, we can send that signal from inside the container, working
+# around the issue.
+#
+# The nginx master process should be operating on PID 1
+#
+# See https://github.com/moby/moby/issues/47792
+#
 
-dc kill --signal HUP nginx
+echo "Reloading nginx configuration."
+dc exec nginx kill -s HUP 1
 
 echo "All Done."

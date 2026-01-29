@@ -8,6 +8,11 @@ if [[ -z "$TR_TORRENT_DIR" ]] || [[ -z "$TR_TORRENT_NAME" ]]; then
     exit 1
 fi
 
+if [[ "$TR_TORRENT_DIR" == *"/tv-sonarr" ]]; then
+  # don't handle downloads handled by sonarr
+  exit 0
+fi
+
 TORRENT_PATH="$TR_TORRENT_DIR/$TR_TORRENT_NAME"
 
 movies_dir="/data/movies"
@@ -27,7 +32,7 @@ do
     episode_id=$(echo $normalized | grep -oe '\bs[0-9][0-9]e[0-9][0-9]\b')
 
     if [[ -n "$episode_id" ]]; then
-        show_name=$(echo $normalized | grep -oe '.*\bs[0-9][0-9]e[0-9][0-9]\b' | sed -r 's/\.s[0-9][0-9]e[0-9][0-9]$//g' | sed -r 's/[^a-z0-9]+$/./g')
+        show_name=$(echo $normalized | grep -oe '.*\bs[0-9][0-9]e[0-9][0-9]\b' | sed -r 's/\.s[0-9][0-9]e[0-9][0-9]$//g' | sed -r 's/[^a-z0-9]+$/./g' | sed -r 's/\.[12][0-9]{3}$//g')
         episode_number=${episode_id:4:2}
         season_number=${episode_id:1:2}
         season_dir="$shows_dir/$show_name/Season $season_number"

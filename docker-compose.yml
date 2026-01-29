@@ -115,3 +115,39 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  sonarr:
+    labels:
+      - "autoheal=true"
+    image: linuxserver/sonarr:4.0.16
+    ports:
+      - 8989:8989
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Toronto
+    volumes:
+      - ./.data/sonarr/config:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  prowlarr:
+    labels:
+      - "autoheal=true"
+    image: linuxserver/prowlarr:2.3.0
+    ports:
+      - 9696:9696
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Toronto
+    volumes:
+      - ./.data/prowlarr/config:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -44,5 +44,16 @@ services:
   transmission:
     restart: unless-stopped
     volumes:
-    - /mnt/main/torrents:/data:rw
-    - ${WORKSPACE_ROOT:?error}/transmission/scripts:/scripts:ro
+      - /mnt/main/torrents:/data:rw
+      - ${WORKSPACE_ROOT:?error}/transmission/scripts:/scripts:ro
+
+  sonarr:
+    restart: unless-stopped
+    volumes:
+      - ${WORKSPACE_ROOT:?error}/sonarr/config:/config
+      - /mnt/main/torrents:/data
+
+  prowlarr:
+    restart: unless-stopped
+    volumes:
+      - ${WORKSPACE_ROOT:?error}/prowlarr/config:/config

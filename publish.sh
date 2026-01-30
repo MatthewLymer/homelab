@@ -90,6 +90,6 @@ dc up --detach
 #
 
 echo "Reloading nginx configuration."
-dc exec nginx kill -s HUP 1
+dc exec nginx /bin/sh -c "kill -s HUP 1"
 
 echo "All Done."

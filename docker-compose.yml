@@ -7,7 +7,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   nginx:
-    image: nginx:mainline-alpine
+    image: nginx:mainline
     ports:
       - 13448:443
       - 10808:80

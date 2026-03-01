@@ -6,12 +6,18 @@ WORKSPACE_ROOT="/mnt/main/home/deployer/homelab"
 
 TRANSMISSION_OPENVPN_USERNAME=
 TRANSMISSION_OPENVPN_PASSWORD=
+OAUTH2_PROXY_GOOGLE_CLIENT_ID=
+OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=
+OAUTH2_PROXY_COOKIE_SECRET=
 
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
     WORKSPACE_ROOT=$WORKSPACE_ROOT \
     TRANSMISSION_OPENVPN_USERNAME=$TRANSMISSION_OPENVPN_USERNAME \
     TRANSMISSION_OPENVPN_PASSWORD=$TRANSMISSION_OPENVPN_PASSWORD \
+    OAUTH2_PROXY_GOOGLE_CLIENT_ID=$OAUTH2_PROXY_GOOGLE_CLIENT_ID \
+    OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=$OAUTH2_PROXY_GOOGLE_CLIENT_SECRET \
+    OAUTH2_PROXY_COOKIE_SECRET=$OAUTH2_PROXY_COOKIE_SECRET \
     docker compose \
     -f docker-compose.yml \
     -f docker-compose.production.yml \
@@ -72,6 +78,14 @@ sshq -C "mkdir -p $SONARR_DIR/config"
 # prowlarr
 PROWLARR_DIR=$WORKSPACE_ROOT/prowlarr
 sshq -C "mkdir -p $PROWLARR_DIR/config"
+
+# oauth2-proxy
+OAUTH2_PROXY_DIR=$WORKSPACE_ROOT/oauth2-proxy
+sshq -C "mkdir -p $OAUTH2_PROXY_DIR"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-allowed-emails | sshq -C "cat - > $OAUTH2_PROXY_DIR/allowed-emails.txt"
+OAUTH2_PROXY_GOOGLE_CLIENT_ID=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-google-client-id)
+OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-google-client-secret)
+OAUTH2_PROXY_COOKIE_SECRET=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-cookie-secret)
 
 echo "Starting workloads."
 

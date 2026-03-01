@@ -47,6 +47,11 @@ services:
       - /mnt/main/torrents:/data:rw
       - ${WORKSPACE_ROOT:?error}/transmission/scripts:/scripts:ro
 
+  oauth2-proxy:
+    restart: unless-stopped
+    volumes:
+      - ${WORKSPACE_ROOT:?error}/oauth2-proxy/allowed-emails.txt:/etc/oauth2-proxy/allowed-emails.txt:ro
+
   sonarr:
     restart: unless-stopped
     volumes:

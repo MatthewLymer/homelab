@@ -1,1 +1,24 @@
-include /etc/nginx/conf.d/custom/default.conf;
+server {
+    listen 80;
+    return 302 https://$host$request_uri;
+}
+
+server {
+    include /etc/nginx/conf.d/setup-ssl.inc;
+
+    server_name default;
+
+    return 404;
+}
+
+server {
+    include /etc/nginx/conf.d/setup-ssl.inc;
+
+    server_name status.*;
+
+    default_type text/plain;
+
+    add_header Cache-Control "no-store";
+
+    return 200 "OK";
+}

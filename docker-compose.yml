@@ -14,6 +14,10 @@ services:
     environment:
       - "NGINX_SSL_CERTIFICATE=/etc/letsencrypt/live/${DOMAIN?:error}/fullchain.pem"
       - "NGINX_SSL_CERTIFICATE_KEY=/etc/letsencrypt/live/${DOMAIN?:error}/privkey.pem"
+      - "DOMAIN=${DOMAIN?:error}"
+      - "SONARR_ALLOWED_EMAILS=${SONARR_ALLOWED_EMAILS?:error}"
+      - "TRANSMISSION_ALLOWED_EMAILS=${TRANSMISSION_ALLOWED_EMAILS?:error}"
+      - "PROWLARR_ALLOWED_EMAILS=${PROWLARR_ALLOWED_EMAILS?:error}"
     volumes:
       - ./workloads/nginx/docker-entrypoint.d/50-hot-reload.sh:/docker-entrypoint.d/50-hot-reload.sh:ro
       - ./workloads/nginx/conf.d/custom:/etc/nginx/conf.d/custom:ro

@@ -1,0 +1,12 @@
+server {
+    include /etc/nginx/conf.d/setup-ssl.inc;
+
+    server_name budget.*;
+
+    resolver 127.0.0.11;
+    set $target "http://actual:5006";
+
+    location / {
+        proxy_pass $target;
+    }
+}

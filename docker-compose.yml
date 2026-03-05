@@ -15,9 +15,6 @@ services:
       - "NGINX_SSL_CERTIFICATE=/etc/letsencrypt/live/${DOMAIN?:error}/fullchain.pem"
       - "NGINX_SSL_CERTIFICATE_KEY=/etc/letsencrypt/live/${DOMAIN?:error}/privkey.pem"
       - "DOMAIN=${DOMAIN?:error}"
-      - "SONARR_ALLOWED_EMAILS=${SONARR_ALLOWED_EMAILS?:error}"
-      - "TRANSMISSION_ALLOWED_EMAILS=${TRANSMISSION_ALLOWED_EMAILS?:error}"
-      - "PROWLARR_ALLOWED_EMAILS=${PROWLARR_ALLOWED_EMAILS?:error}"
     volumes:
       - ./workloads/nginx/docker-entrypoint.d/50-hot-reload.sh:/docker-entrypoint.d/50-hot-reload.sh:ro
       - ./workloads/nginx/conf.d/custom:/etc/nginx/conf.d/custom:ro
@@ -122,6 +119,13 @@ services:
 
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.7.1
+    labels:
+      - "autoheal=true"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4180/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     command:
       - --provider=google
       - --http-address=0.0.0.0:4180

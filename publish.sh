@@ -82,14 +82,14 @@ sshq -C "mkdir -p $PROWLARR_DIR/config"
 # oauth2-proxy
 OAUTH2_PROXY_DIR=$WORKSPACE_ROOT/oauth2-proxy
 sshq -C "mkdir -p $OAUTH2_PROXY_DIR"
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-allowed-emails | sshq -C "cat - > $OAUTH2_PROXY_DIR/allowed-emails.txt"
 OAUTH2_PROXY_GOOGLE_CLIENT_ID=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-google-client-id)
 OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-google-client-secret)
 OAUTH2_PROXY_COOKIE_SECRET=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-cookie-secret)
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-allowed-emails | sshq -C "cat - > $OAUTH2_PROXY_DIR/allowed-emails.txt && chmod 600 $OAUTH2_PROXY_DIR/allowed-emails.txt"
 
 echo "Starting workloads."
 
-dc up --detach
+dc up --detach --remove-orphans
 
 # Do not do `dc kill --signal HUP nginx` to send the SIGHUP signal, as
 # it will make docker think we want to stop the container, and the

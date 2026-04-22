@@ -1,0 +1,3 @@
+# Allowed email addresses (one per line).
+# In production this file is overwritten by publish.sh from the
+# oauth2-proxy-allowed-emails GCP secret.

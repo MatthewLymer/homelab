@@ -119,13 +119,6 @@ services:
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
     user: root
-    labels:
-      - "autoheal=true"
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4180/ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     command:
       - --provider=google
       - --upstream=static://202

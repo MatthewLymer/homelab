@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 SSH_CREDS="deployer@truenas.local"
 GOOGLE_PROJECT=$(cat .env | grep 'GOOGLE_PROJECT=' | cut -d'=' -f2-)
 WORKSPACE_ROOT="/mnt/main/home/deployer/homelab"

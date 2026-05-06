@@ -62,3 +62,9 @@ services:
     restart: unless-stopped
     volumes:
       - ${WORKSPACE_ROOT:?error}/prowlarr/config:/config
+
+  unpackerr:
+    restart: unless-stopped
+    volumes:
+      - ${WORKSPACE_ROOT:?error}/unpackerr/config:/config
+      - /mnt/main/torrents:/data:rw

@@ -11,6 +11,7 @@ TRANSMISSION_OPENVPN_PASSWORD=
 OAUTH2_PROXY_GOOGLE_CLIENT_ID=
 OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=
 OAUTH2_PROXY_COOKIE_SECRET=
+SONARR_API_KEY=
 
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
@@ -20,6 +21,7 @@ dc() {
     OAUTH2_PROXY_GOOGLE_CLIENT_ID=$OAUTH2_PROXY_GOOGLE_CLIENT_ID \
     OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=$OAUTH2_PROXY_GOOGLE_CLIENT_SECRET \
     OAUTH2_PROXY_COOKIE_SECRET=$OAUTH2_PROXY_COOKIE_SECRET \
+    SONARR_API_KEY=$SONARR_API_KEY \
     docker compose \
     -f docker-compose.yml \
     -f docker-compose.production.yml \
@@ -80,6 +82,11 @@ sshq -C "mkdir -p $SONARR_DIR/config"
 # prowlarr
 PROWLARR_DIR=$WORKSPACE_ROOT/prowlarr
 sshq -C "mkdir -p $PROWLARR_DIR/config"
+
+# unpackerr
+UNPACKERR_DIR=$WORKSPACE_ROOT/unpackerr
+sshq -C "mkdir -p $UNPACKERR_DIR/config"
+SONARR_API_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=sonarr-api-key)
 
 # oauth2-proxy
 OAUTH2_PROXY_DIR=$WORKSPACE_ROOT/oauth2-proxy

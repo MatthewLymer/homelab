@@ -173,3 +173,22 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  unpackerr:
+    labels:
+      - "autoheal=true"
+    image: golift/unpackerr:0.15.2
+    environment:
+      - UN_SONARR_0_URL=http://sonarr:8989
+      - UN_SONARR_0_API_KEY=${SONARR_API_KEY:-}
+      - UN_SONARR_0_PATHS_0=/data
+      - UN_WEBSERVER_METRICS=true
+      - UN_WEBSERVER_LISTEN_ADDR=0.0.0.0:5656
+    volumes:
+      - ./.data/unpackerr/config:/config
+      - ./.data/transmission:/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:5656/metrics || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

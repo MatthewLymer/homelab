@@ -88,6 +88,10 @@ UNPACKERR_DIR=$WORKSPACE_ROOT/unpackerr
 sshq -C "mkdir -p $UNPACKERR_DIR/config"
 SONARR_API_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=sonarr-api-key)
 
+# seerr
+SEERR_DIR=$WORKSPACE_ROOT/seerr
+sshq -C "mkdir -p $SEERR_DIR/config"
+
 # oauth2-proxy
 OAUTH2_PROXY_DIR=$WORKSPACE_ROOT/oauth2-proxy
 sshq -C "mkdir -p $OAUTH2_PROXY_DIR"

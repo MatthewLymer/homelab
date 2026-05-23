@@ -63,6 +63,11 @@ services:
     volumes:
       - ${WORKSPACE_ROOT:?error}/prowlarr/config:/config
 
+  seerr:
+    restart: unless-stopped
+    volumes:
+      - ${WORKSPACE_ROOT:?error}/seerr/config:/app/config
+
   unpackerr:
     restart: unless-stopped
     volumes:

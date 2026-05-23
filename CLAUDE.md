@@ -51,6 +51,7 @@ Each workload under `infrastructure/` has its own Terraform state (separate `bac
 | sonarr | Primary media manager (search, grab, monitor) | 8989 | `sonarr.*` |
 | prowlarr | Indexer manager | 9696 | — |
 | oauth2-proxy | Google auth handler for nginx | 4180 | `auth.*` |
+| seerr | Media request manager | 5055 | `requests.*` |
 
 ### Nginx Routing Pattern
 Nginx uses dynamic `$target` variables resolved via Docker's internal DNS (`resolver 127.0.0.11`) so services can be unavailable without crashing nginx:

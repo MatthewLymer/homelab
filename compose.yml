@@ -174,6 +174,19 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  seerr:
+    labels:
+      - "autoheal=true"
+    image: seerr/seerr:v3.1.0
+    user: root
+    volumes:
+      - ./.data/seerr/config:/app/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   unpackerr:
     labels:
       - "autoheal=true"

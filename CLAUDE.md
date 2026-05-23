@@ -34,11 +34,11 @@ Each workload under `infrastructure/` has its own Terraform state (separate `bac
 ## Architecture
 
 ### Deployment Model
-- **Local compose:** `docker-compose.yml` is the base; `docker-compose.production.yml` overlays production paths and `restart: unless-stopped` policies.
+- **Local compose:** `compose.yml` is the base; `compose.production.yml` overlays production paths and `restart: unless-stopped` policies.
 - **`publish.sh`:** Orchestrates deployment — grants Docker access on TrueNAS, creates remote directories, pulls secrets from GCP Secret Manager, tars/syncs configs, and brings containers up.
 - **Secrets:** All credentials fetched from GCP Secret Manager at deploy time and written directly into service subdirectories under `$WORKSPACE_ROOT` on the remote TrueNAS host (e.g. `$WORKSPACE_ROOT/certbot/certbot_sa_key.json`). Containers receive them via read-only volume mounts.
 
-### Services (docker-compose.yml)
+### Services (compose.yml)
 | Service | Role | Internal Port | Nginx Subdomain |
 |---------|------|--------------|-----------------|
 | nginx | Reverse proxy + SSL termination | 13448 (HTTPS), 10808 (HTTP) | — |
@@ -78,11 +78,11 @@ Each subdirectory is an independent Terraform module with its own GCS backend:
 Sonarr is the primary media flow: it uses Prowlarr for indexers, triggers Transmission for downloads (into the `/tv-sonarr` directory), and manages its own file organization. Transmission's `on-torrent-done.sh` explicitly skips transfers in `/tv-sonarr` and only organizes manually-initiated downloads via hardlinks into `/data/shows/`, `/data/movies/`, or `/data/other/`. Jellyfin serves the library from shared NAS paths (`/mnt/main/`).
 
 ### Finances Automation (`workloads/finances/`)
-Standalone Node.js/TypeScript Express app with its own `docker-compose.yml`. Uses Selenium (standalone-chromium) to scrape TD Easyweb accounts. Has a Finite State Machine for MFA flows and stores data in an encrypted volume.
+Standalone Node.js/TypeScript Express app with its own `compose.yml`. Uses Selenium (standalone-chromium) to scrape TD Easyweb accounts. Has a Finite State Machine for MFA flows and stores data in an encrypted volume.
 
 ## Key Files
-- `docker-compose.yml` — All service definitions
-- `docker-compose.production.yml` — Production path/restart overrides
+- `compose.yml` — All service definitions
+- `compose.production.yml` — Production path/restart overrides
 - `.env` — `DOMAIN`, `ZONE`, `GOOGLE_PROJECT` (non-sensitive)
 - `publish.sh` — Deployment script; sets `SSH_CREDS=deployer@truenas.local`, `WORKSPACE_ROOT=/mnt/main/home/deployer/homelab`
 - `workloads/nginx/conf.d/` — Nginx virtual host configs

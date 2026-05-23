@@ -86,7 +86,7 @@ services:
   jellyfin:
     labels:
       - "autoheal=true"
-    image: jellyfin/jellyfin
+    image: jellyfin/jellyfin:10.11.9
     volumes:
       - ./.data/jellyfin/config:/config
       - ./.data/jellyfin/cache:/cache

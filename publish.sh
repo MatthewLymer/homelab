@@ -23,8 +23,8 @@ dc() {
     OAUTH2_PROXY_COOKIE_SECRET=$OAUTH2_PROXY_COOKIE_SECRET \
     SONARR_API_KEY=$SONARR_API_KEY \
     docker compose \
-    -f docker-compose.yml \
-    -f docker-compose.production.yml \
+    -f compose.yml \
+    -f compose.production.yml \
     "$@"
 }
 

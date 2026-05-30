@@ -141,7 +141,7 @@ services:
   sonarr:
     labels:
       - "autoheal=true"
-    image: linuxserver/sonarr:4.0.16
+    image: linuxserver/sonarr:4.0.17
     ports:
       - 8989:8989
     environment:
@@ -150,6 +150,24 @@ services:
       - TZ=America/Toronto
     volumes:
       - ./.data/sonarr/config:/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  radarr:
+    labels:
+      - "autoheal=true"
+    image: linuxserver/radarr:6.1.1
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Toronto
+    volumes:
+      - ./.data/radarr/config:/config
     logging:
       driver: "json-file"
       options:
@@ -195,6 +213,9 @@ services:
       - UN_SONARR_0_URL=http://sonarr:8989
       - UN_SONARR_0_API_KEY=${SONARR_API_KEY:-}
       - UN_SONARR_0_PATHS_0=/data
+      - UN_RADARR_0_URL=http://radarr:7878
+      - UN_RADARR_0_API_KEY=${RADARR_API_KEY:-}
+      - UN_RADARR_0_PATHS_0=/data
       - UN_WEBSERVER_METRICS=true
       - UN_WEBSERVER_LISTEN_ADDR=0.0.0.0:5656
     volumes:

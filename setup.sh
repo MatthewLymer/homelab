@@ -178,6 +178,22 @@ else
     green "  Set: $secret_id"
 fi
 
+# ── Radarr API key (for Unpackerr) ───────────────────────────────────────────
+
+bold "==> Radarr API key (for Unpackerr)"
+echo "  Find your Radarr API key at: Settings → General → Security → API Key"
+echo
+
+secret_id="radarr-api-key"
+ensure_secret_resource "$secret_id"
+if secret_has_version "$secret_id"; then
+    green "  OK: $secret_id (already set)"
+else
+    value=$(prompt_secret "$secret_id" "Radarr API Key")
+    add_secret_version "$secret_id" "$value"
+    green "  Set: $secret_id"
+fi
+
 # ── oauth2-proxy secrets ──────────────────────────────────────────────────────
 
 bold "==> oauth2-proxy secrets"

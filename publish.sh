@@ -12,6 +12,7 @@ OAUTH2_PROXY_GOOGLE_CLIENT_ID=
 OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=
 OAUTH2_PROXY_COOKIE_SECRET=
 SONARR_API_KEY=
+RADARR_API_KEY=
 
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
@@ -22,6 +23,7 @@ dc() {
     OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=$OAUTH2_PROXY_GOOGLE_CLIENT_SECRET \
     OAUTH2_PROXY_COOKIE_SECRET=$OAUTH2_PROXY_COOKIE_SECRET \
     SONARR_API_KEY=$SONARR_API_KEY \
+    RADARR_API_KEY=$RADARR_API_KEY \
     docker compose \
     -f compose.yml \
     -f compose.production.yml \
@@ -79,6 +81,10 @@ TRANSMISSION_OPENVPN_PASSWORD=$(gcloud secrets versions access latest --project=
 SONARR_DIR=$WORKSPACE_ROOT/sonarr
 sshq -C "mkdir -p $SONARR_DIR/config"
 
+# radarr
+RADARR_DIR=$WORKSPACE_ROOT/radarr
+sshq -C "mkdir -p $RADARR_DIR/config"
+
 # prowlarr
 PROWLARR_DIR=$WORKSPACE_ROOT/prowlarr
 sshq -C "mkdir -p $PROWLARR_DIR/config"
@@ -87,6 +93,7 @@ sshq -C "mkdir -p $PROWLARR_DIR/config"
 UNPACKERR_DIR=$WORKSPACE_ROOT/unpackerr
 sshq -C "mkdir -p $UNPACKERR_DIR/config"
 SONARR_API_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=sonarr-api-key)
+RADARR_API_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=radarr-api-key)
 
 # seerr
 SEERR_DIR=$WORKSPACE_ROOT/seerr

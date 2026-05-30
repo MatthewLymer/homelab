@@ -58,6 +58,12 @@ services:
       - ${WORKSPACE_ROOT:?error}/sonarr/config:/config
       - /mnt/main/torrents:/data
 
+  radarr:
+    restart: unless-stopped
+    volumes:
+      - ${WORKSPACE_ROOT:?error}/radarr/config:/config
+      - /mnt/main/torrents:/data
+
   prowlarr:
     restart: unless-stopped
     volumes:

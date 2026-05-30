@@ -49,6 +49,7 @@ Each workload under `infrastructure/` has its own Terraform state (separate `bac
 | jellyfin | Media server | 8096 | `media.*` |
 | transmission | Torrent client + OpenVPN | 9091 | — |
 | sonarr | Primary media manager (search, grab, monitor) | 8989 | `sonarr.*` |
+| radarr | Movie manager (search, grab, monitor) | 7878 | `radarr.*` |
 | prowlarr | Indexer manager | 9696 | — |
 | oauth2-proxy | Google auth handler for nginx | 4180 | `auth.*` |
 | seerr | Media request manager | 5055 | `requests.*` |

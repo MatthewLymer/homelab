@@ -8,8 +8,8 @@ if [[ -z "$TR_TORRENT_DIR" ]] || [[ -z "$TR_TORRENT_NAME" ]]; then
     exit 1
 fi
 
-if [[ "$TR_TORRENT_DIR" == *"/tv-sonarr" ]]; then
-  # don't handle downloads handled by sonarr
+if [[ "$TR_TORRENT_DIR" == *"/tv-sonarr" ]] || [[ "$TR_TORRENT_DIR" == *"/radarr" ]]; then
+  # don't handle downloads handled by sonarr or radarr
   exit 0
 fi
 

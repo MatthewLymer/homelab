@@ -216,7 +216,9 @@ yellow "  For oauth2-proxy-google-client-id and oauth2-proxy-google-client-secre
 yellow "  Create an OAuth 2.0 Client ID in the Google Cloud Console:"
 yellow "    https://console.cloud.google.com/apis/credentials"
 yellow "  Application type: Web application"
-yellow "  Authorized redirect URIs: https://auth.lymer.ca/oauth2/callback"
+yellow "  Authorized redirect URIs (add both):"
+yellow "    https://auth-administrators.lymer.ca/oauth2/callback"
+yellow "    https://auth-requesters.lymer.ca/oauth2/callback"
 echo
 
 for secret_id in oauth2-proxy-google-client-id oauth2-proxy-google-client-secret; do
@@ -237,15 +239,34 @@ for secret_id in oauth2-proxy-google-client-id oauth2-proxy-google-client-secret
     fi
 done
 
-# allowed emails list
-secret_id="oauth2-proxy-allowed-emails"
+# administrators allowed emails list
+secret_id="oauth2-proxy-administrators-allowed-emails"
 ensure_secret_resource "$secret_id"
 if secret_has_version "$secret_id"; then
     green "  OK: $secret_id (already set)"
 else
     echo
-    echo "  Enter email addresses allowed to log in (one per line)."
-    echo "  Press Ctrl+D when done:"
+    echo "  Enter email addresses for ADMINISTRATORS (sonarr/radarr/prowlarr/transmission/seerr access)."
+    echo "  One per line. Press Ctrl+D when done:"
+    allowed_emails=$(</dev/stdin)
+    if [[ -z "$allowed_emails" ]]; then
+        red "  ERROR: No email addresses entered. At least one is required."
+        exit 1
+    fi
+    add_secret_version "$secret_id" "$allowed_emails"
+    green "  Set: $secret_id"
+fi
+
+# requesters allowed emails list (superset: admins + requesters for seerr access)
+secret_id="oauth2-proxy-requesters-allowed-emails"
+ensure_secret_resource "$secret_id"
+if secret_has_version "$secret_id"; then
+    green "  OK: $secret_id (already set)"
+else
+    echo
+    echo "  Enter email addresses for REQUESTERS (seerr access only)."
+    echo "  Include all administrator emails here too (this list is a superset)."
+    echo "  One per line. Press Ctrl+D when done:"
     allowed_emails=$(</dev/stdin)
     if [[ -z "$allowed_emails" ]]; then
         red "  ERROR: No email addresses entered. At least one is required."

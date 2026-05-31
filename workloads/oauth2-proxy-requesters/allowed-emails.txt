@@ -1,0 +1,4 @@
+# Allowed email addresses for requesters (one per line).
+# This list should be a superset of administrators so admins can also access seerr.
+# In production this file is overwritten by publish.sh from the
+# oauth2-proxy-requesters-allowed-emails GCP secret.

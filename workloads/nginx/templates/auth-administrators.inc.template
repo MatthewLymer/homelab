@@ -1,0 +1,22 @@
+# Server-level: all locations in this server block require auth by default
+auth_request /oauth2/auth;
+error_page 401 = @oauth2_login;
+
+auth_request_set $auth_user $upstream_http_x_auth_request_email;
+proxy_set_header X-User $auth_user;
+
+set $oauth2 "http://oauth2-proxy-administrators:4180";
+
+location = /oauth2/auth {
+    auth_request off;
+    proxy_pass $oauth2/oauth2/auth;
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location @oauth2_login {
+    internal;
+    return 302 https://auth-administrators.${DOMAIN}/oauth2/sign_in?rd=$scheme://$http_host$request_uri;
+}

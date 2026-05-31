@@ -99,13 +99,20 @@ RADARR_API_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT
 SEERR_DIR=$WORKSPACE_ROOT/seerr
 sshq -C "mkdir -p $SEERR_DIR/config"
 
-# oauth2-proxy
-OAUTH2_PROXY_DIR=$WORKSPACE_ROOT/oauth2-proxy
-sshq -C "mkdir -p $OAUTH2_PROXY_DIR"
+# oauth2-proxy (shared secrets)
 OAUTH2_PROXY_GOOGLE_CLIENT_ID=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-google-client-id)
 OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-google-client-secret)
 OAUTH2_PROXY_COOKIE_SECRET=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-cookie-secret)
-gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-allowed-emails | sshq -C "cat - > $OAUTH2_PROXY_DIR/allowed-emails.txt && chmod 600 $OAUTH2_PROXY_DIR/allowed-emails.txt"
+
+# oauth2-proxy-administrators
+OAUTH2_PROXY_ADMINISTRATORS_DIR=$WORKSPACE_ROOT/oauth2-proxy-administrators
+sshq -C "mkdir -p $OAUTH2_PROXY_ADMINISTRATORS_DIR"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-administrators-allowed-emails | sshq -C "cat - > $OAUTH2_PROXY_ADMINISTRATORS_DIR/allowed-emails.txt && chmod 600 $OAUTH2_PROXY_ADMINISTRATORS_DIR/allowed-emails.txt"
+
+# oauth2-proxy-requesters
+OAUTH2_PROXY_REQUESTERS_DIR=$WORKSPACE_ROOT/oauth2-proxy-requesters
+sshq -C "mkdir -p $OAUTH2_PROXY_REQUESTERS_DIR"
+gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=oauth2-proxy-requesters-allowed-emails | sshq -C "cat - > $OAUTH2_PROXY_REQUESTERS_DIR/allowed-emails.txt && chmod 600 $OAUTH2_PROXY_REQUESTERS_DIR/allowed-emails.txt"
 
 echo "Starting workloads."
 

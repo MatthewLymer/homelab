@@ -116,14 +116,14 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  oauth2-proxy:
+  oauth2-proxy-administrators:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
     user: root
     command:
       - --provider=google
       - --upstream=static://202
       - --http-address=0.0.0.0:4180
-      - --redirect-url=https://auth.${DOMAIN}/oauth2/callback
+      - --redirect-url=https://auth-administrators.${DOMAIN}/oauth2/callback
       - --cookie-domain=.${DOMAIN}
       - --cookie-secure=true
       - --cookie-name=_oauth2_proxy
@@ -136,7 +136,29 @@ services:
       OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_GOOGLE_CLIENT_SECRET?:error}
       OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET?:error}
     volumes:
-      - ./workloads/oauth2-proxy/allowed-emails.txt:/etc/oauth2-proxy/allowed-emails.txt:ro
+      - ./workloads/oauth2-proxy-administrators/allowed-emails.txt:/etc/oauth2-proxy/allowed-emails.txt:ro
+
+  oauth2-proxy-requesters:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+    user: root
+    command:
+      - --provider=google
+      - --upstream=static://202
+      - --http-address=0.0.0.0:4180
+      - --redirect-url=https://auth-requesters.${DOMAIN}/oauth2/callback
+      - --cookie-domain=.${DOMAIN}
+      - --cookie-secure=true
+      - --cookie-name=_oauth2_proxy
+      - --cookie-samesite=lax
+      - --set-xauthrequest=true
+      - --whitelist-domain=.${DOMAIN}
+      - --authenticated-emails-file=/etc/oauth2-proxy/allowed-emails.txt
+    environment:
+      OAUTH2_PROXY_CLIENT_ID: ${OAUTH2_PROXY_GOOGLE_CLIENT_ID?:error}
+      OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_GOOGLE_CLIENT_SECRET?:error}
+      OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET?:error}
+    volumes:
+      - ./workloads/oauth2-proxy-requesters/allowed-emails.txt:/etc/oauth2-proxy/allowed-emails.txt:ro
 
   sonarr:
     labels:

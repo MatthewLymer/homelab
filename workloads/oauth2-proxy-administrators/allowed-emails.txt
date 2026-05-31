@@ -1,0 +1,3 @@
+# Allowed email addresses for administrators (one per line).
+# In production this file is overwritten by publish.sh from the
+# oauth2-proxy-administrators-allowed-emails GCP secret.

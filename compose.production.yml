@@ -79,6 +79,19 @@ services:
     volumes:
       - ${WORKSPACE_ROOT:?error}/seerr/config:/app/config
 
+  romm-db:
+    restart: unless-stopped
+    volumes:
+      - ${WORKSPACE_ROOT:?error}/romm/db:/var/lib/mysql
+
+  romm:
+    restart: unless-stopped
+    volumes:
+      - /mnt/main/torrents/games/library:/romm/library
+      - /mnt/main/torrents/games/assets:/romm/assets
+      - ${WORKSPACE_ROOT:?error}/romm/config:/romm/config
+      - ${WORKSPACE_ROOT:?error}/romm/logs:/romm/logs
+
   unpackerr:
     restart: unless-stopped
     volumes:

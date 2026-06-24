@@ -13,6 +13,8 @@ OAUTH2_PROXY_GOOGLE_CLIENT_SECRET=
 OAUTH2_PROXY_COOKIE_SECRET=
 SONARR_API_KEY=
 RADARR_API_KEY=
+ROMM_DB_PASSWORD=
+ROMM_AUTH_SECRET_KEY=
 
 dc() {
     DOCKER_HOST="ssh://${SSH_CREDS}" \
@@ -24,6 +26,8 @@ dc() {
     OAUTH2_PROXY_COOKIE_SECRET=$OAUTH2_PROXY_COOKIE_SECRET \
     SONARR_API_KEY=$SONARR_API_KEY \
     RADARR_API_KEY=$RADARR_API_KEY \
+    ROMM_DB_PASSWORD=$ROMM_DB_PASSWORD \
+    ROMM_AUTH_SECRET_KEY=$ROMM_AUTH_SECRET_KEY \
     docker compose \
     -f compose.yml \
     -f compose.production.yml \
@@ -94,6 +98,12 @@ UNPACKERR_DIR=$WORKSPACE_ROOT/unpackerr
 sshq -C "mkdir -p $UNPACKERR_DIR/config"
 SONARR_API_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=sonarr-api-key)
 RADARR_API_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=radarr-api-key)
+
+# romm
+ROMM_DIR=$WORKSPACE_ROOT/romm
+sshq -C "mkdir -p $ROMM_DIR/config $ROMM_DIR/logs $ROMM_DIR/db"
+ROMM_DB_PASSWORD=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=romm-db-password)
+ROMM_AUTH_SECRET_KEY=$(gcloud secrets versions access latest --project=$GOOGLE_PROJECT --secret=romm-auth-secret-key)
 
 # seerr
 SEERR_DIR=$WORKSPACE_ROOT/seerr

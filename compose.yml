@@ -227,6 +227,47 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  romm-db:
+    image: mariadb:latest
+    environment:
+      MARIADB_ROOT_PASSWORD: ${ROMM_DB_PASSWORD:-}
+      MARIADB_DATABASE: romm
+      MARIADB_USER: romm-user
+      MARIADB_PASSWORD: ${ROMM_DB_PASSWORD:-}
+    volumes:
+      - ./.data/romm/db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  romm:
+    labels:
+      - "autoheal=true"
+    image: rommapp/romm:latest
+    depends_on:
+      romm-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: romm-db
+      DB_PORT: 3306
+      DB_NAME: romm
+      DB_USER: romm-user
+      DB_PASSWD: ${ROMM_DB_PASSWORD:-}
+      ROMM_AUTH_SECRET_KEY: ${ROMM_AUTH_SECRET_KEY:-}
+    volumes:
+      - ./.data/romm/library:/romm/library
+      - ./.data/romm/assets:/romm/assets
+      - ./.data/romm/config:/romm/config
+      - ./.data/romm/logs:/romm/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   unpackerr:
     labels:
       - "autoheal=true"

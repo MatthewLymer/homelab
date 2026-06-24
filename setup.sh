@@ -194,6 +194,30 @@ else
     green "  Set: $secret_id"
 fi
 
+# ── RomM secrets ─────────────────────────────────────────────────────────────
+
+bold "==> RomM secrets"
+
+secret_id="romm-db-password"
+ensure_secret_resource "$secret_id"
+if secret_has_version "$secret_id"; then
+    green "  OK: $secret_id (already set)"
+else
+    echo "  Generating random DB password..."
+    add_secret_version "$secret_id" "$(openssl rand -hex 24)"
+    green "  Generated and stored: $secret_id"
+fi
+
+secret_id="romm-auth-secret-key"
+ensure_secret_resource "$secret_id"
+if secret_has_version "$secret_id"; then
+    green "  OK: $secret_id (already set)"
+else
+    echo "  Generating random auth secret key..."
+    add_secret_version "$secret_id" "$(openssl rand -hex 32)"
+    green "  Generated and stored: $secret_id"
+fi
+
 # ── oauth2-proxy secrets ──────────────────────────────────────────────────────
 
 bold "==> oauth2-proxy secrets"
